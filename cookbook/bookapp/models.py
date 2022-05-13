@@ -36,7 +36,7 @@ class Ingredient(models.Model):
 
 class Recipes(models.Model):
     name = models.CharField(max_length=16, unique=True)
-    picture = models.ImageField()
+    picture = models.ImageField(upload_to='posts', null=True, blank=True)
     ingredients = models.ManyToManyField(Ingredient)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)
