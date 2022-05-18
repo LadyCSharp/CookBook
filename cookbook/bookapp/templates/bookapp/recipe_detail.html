@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{object.name}}
+{% endblock%}
+
+{% block content %}
+
+    <h1>{{object.name}}</h1>
+
+    <div class="col-lg-8 col-md-10 mx-auto">
+         <img src="{{object.picture.url}}", width="300">
+       <p> {{object.category}} </p>
+        <p>{{object.difficulty}} </p>
+       <p> {{object.duration}} </p>
+        {% for i in object.ingredients.all %}
+            <li  >
+                {{i.name}} --- {{i.group}}
+
+            </li>
+    {% endfor %}
+
+
+                        <p>
+
+                            {{object.text}}
+                        </p>
+
+
+    </div>
+
+    <a href="{% url 'cookbook:recipe_update' pk=object.pk %}">
+            Изменить
+        </a>
+</div>
+{% endblock %}
