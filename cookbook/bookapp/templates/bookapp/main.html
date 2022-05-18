@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+Главная
+{% endblock %}
+
+{% block content %}
+<h1>{{name}}</h1>
+<ul>
+    {% for item in Recipes %}
+    <li>
+        <a href="{% url 'cookbook:recipe_detail' pk=item.pk %}">
+            {{item.name}}
+             <img src="{{item.picture.url}}", width="60">
+        </a>
+|
+        <a href="{% url 'cookbook:recipe_update' pk=item.pk %}">
+            Изменить
+        </a>
+        |
+
+        <a href="{% url 'cookbook:recipe_delete' pk=item.pk %}">
+            Удалить
+        </a>
+
+    </li>
+    {% endfor %}
+<hr>
+    <a href="{% url 'cookbook:create' %}">Создать</a>
+</ul>
+{% endblock %}

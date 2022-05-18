@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+Список продуктов
+{% endblock %}
+
+{% block content %}
+<h1>{{name}}</h1>
+<ul>
+    {% for item in Ingredient %}
+    <li>
+        <a href="{% url 'cookbook:ingredient_detail' pk=item.pk %}">
+            {{item.name}} --- {{item.group}}
+        </a>
+|
+        <a href="{% url 'cookbook:ingredient_update' pk=item.pk %}">
+            Изменить
+        </a>
+        |
+
+        <a href="{% url 'cookbook:ingredient_delete' pk=item.pk %}">
+            Удалить
+        </a>
+
+    </li>
+    {% endfor %}
+
+    <a href="{% url 'cookbook:ingredient_create' %}">Создать</a>
+</ul>
+{% endblock %}
