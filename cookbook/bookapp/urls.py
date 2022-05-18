@@ -3,7 +3,7 @@ from bookapp import views
 
 
 app_name = 'bookapp'
-#app_name = 'cookbook'
+
 urlpatterns = [
     path('', views.MainView.as_view(), name='index'),
     path('create/', views.RecipeCreateView.as_view(), name='create'),

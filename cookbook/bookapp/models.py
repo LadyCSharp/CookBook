@@ -1,5 +1,5 @@
 from django.db import models
-
+from userapp.models import BookUser
 # Create your models here.
 class TimeStamp(models.Model):
     """
@@ -61,5 +61,7 @@ class Recipes(TimeStamp, Mother):
     duration = models.TimeField()
     portions = models.PositiveSmallIntegerField()
     text = models.TextField()
+    author = models.ForeignKey(BookUser, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.name
