@@ -7,6 +7,8 @@ from django.core.mail import send_mail
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django import forms
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # Create your views here.
 # def main_view(request):
 #     posts = Recipes.objects.all()
@@ -41,6 +43,7 @@ def post(request, id):
     post = get_object_or_404(Recipes, id=id)
     return render(request, 'bookapp/post.html', context={'post': post})
 
+@login_required
 def create_recipe(request):
     if request.method == 'GET':
         form = PostForm()
@@ -48,6 +51,7 @@ def create_recipe(request):
     else:
         form = PostForm(request.POST, files=request.FILES)
         if form.is_valid():
+            form.instance.author = request.user
             form.save()
             return HttpResponseRedirect(reverse('cookbook:index'))
         else:
@@ -114,7 +118,7 @@ class IngredientDetailView(DetailView, NameContextMixin):
 
 
 # создание тега
-class IngredientCreateView(CreateView, NameContextMixin):
+class IngredientCreateView(LoginRequiredMixin, CreateView, NameContextMixin):
     # form_class =
     fields = '__all__'
     model = Ingredient
@@ -140,14 +144,14 @@ class IngredientCreateView(CreateView, NameContextMixin):
         return super().form_valid(form)
 
 
-class IngredientUpdateView(UpdateView):
+class IngredientUpdateView(LoginRequiredMixin,UpdateView):
     fields = '__all__'
     model = Ingredient
     success_url = reverse_lazy('cookbook:ingredient_list')
     template_name = 'bookapp/ingredient_create.html'
 
 
-class IngredientDeleteView(DeleteView):
+class IngredientDeleteView(LoginRequiredMixin,DeleteView):
     template_name = 'bookapp/ingredient_delete.html'
     model = Ingredient
     success_url = reverse_lazy('cookbook:ingredient_list')
@@ -171,12 +175,22 @@ class MainView(ListView):
     context_object_name = 'Recipes'
 
 
-class RecipeCreateView(CreateView):
+class RecipeCreateView(LoginRequiredMixin, CreateView):
     # form_class =
-    fields = '__all__'
     model = Recipes
+    # fields = '__all__'
+    # exclude = ('author')
+    form_class = PostForm
     success_url = reverse_lazy('cookbook:index')
     template_name = 'bookapp/recipe_create.html'
+    def form_valid(self, form):
+        """
+        Метод срабатывает после того как форма валидна
+        :param form:
+        :return:
+        """
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 class RecipeDetailView(DetailView):
     fields = '__all__'
@@ -204,14 +218,25 @@ class RecipeDetailView(DetailView):
         """
         return get_object_or_404(Recipes, pk=self.tag_id)
 
-class RecipeUpdateView(UpdateView):
+class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     fields = '__all__'
     model = Recipes
     success_url = reverse_lazy('cookbook:index')
     template_name = 'bookapp/recipe_create.html'
+    def form_valid(self, form):
+        """
+        Метод срабатывает после того как форма валидна
+        :param form:
+        :return:
+        """
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
-class RecipeDeleteView(DeleteView):
+class RecipeDeleteView(UserPassesTestMixin, DeleteView):
     template_name = 'bookapp/ingredient_delete.html'
     model = Recipes
     success_url = reverse_lazy('cookbook:index')
+
+    def test_func(self):
+        return self.request.user.is_superuser

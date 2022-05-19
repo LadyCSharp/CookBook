@@ -15,13 +15,13 @@ class PostForm(forms.ModelForm):
                            widget=forms.TextInput(attrs={'placeholder': 'Name', 'class': 'form-control'}))
 
     # Чекбоксы
-    tags = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
+    ingredients = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
                                           widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Recipes
         # fields = '__all__'
         # fields = ('name', 'category')
-        exclude = ('ingredients',)
+        exclude = ('ingredients', 'author')
 
 

@@ -11,6 +11,7 @@
     <div class="col-lg-8 col-md-10 mx-auto">
          <img src="{{object.picture.url}}", width="300">
        <p> {{object.category}} </p>
+        <p> {{object.description}} </p>
         <p>{{object.difficulty}} </p>
        <p> {{object.duration}} </p>
         {% for i in object.ingredients.all %}
@@ -28,7 +29,7 @@
 
 
     </div>
-
+    <p> {{object.author}} </p>
     <a href="{% url 'cookbook:recipe_update' pk=object.pk %}">
             Изменить
         </a>
