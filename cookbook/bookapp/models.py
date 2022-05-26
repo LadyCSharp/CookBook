@@ -55,7 +55,7 @@ class Ingredient(Mother):
 class Recipes(TimeStamp, Mother):
 
     picture = models.ImageField(upload_to='posts', null=True, blank=True)
-    ingredients = models.ManyToManyField(Ingredient)
+    ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)
     duration = models.TimeField()
@@ -64,4 +64,27 @@ class Recipes(TimeStamp, Mother):
     author = models.ForeignKey(BookUser, on_delete=models.CASCADE)
 
     def __str__(self):
+        return f'{self.name}, category: {self.category.name}'
+
+    def has_image(self):
+        # print('my image:', self.image)
+        # print('type', type(self.image))
+        return bool(self.picture)
+
+
+class MeasureUnit(Mother):
+    def __str__(self):
         return self.name
+
+
+class Ingredient_Recipe(models.Model):
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, db_index=False)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, db_index=False)
+    count = models.PositiveSmallIntegerField()
+    measureunit = models.ForeignKey(MeasureUnit, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (
+            'recipe',
+            'ingredient',
+        )

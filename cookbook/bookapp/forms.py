@@ -17,6 +17,9 @@ class PostForm(forms.ModelForm):
     # Чекбоксы
     ingredients = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
                                           widget=forms.CheckboxSelectMultiple())
+    count = forms.NumberInput()
+    measureunit = forms.CharField()
+
 
     class Meta:
         model = Recipes

@@ -9,7 +9,9 @@
     <h1>{{object.name}}</h1>
 
     <div class="col-lg-8 col-md-10 mx-auto">
+         {% if object.has_image %}
          <img src="{{object.picture.url}}", width="300">
+        {% endif %}
        <p> {{object.category}} </p>
         <p> {{object.description}} </p>
         <p>{{object.difficulty}} </p>

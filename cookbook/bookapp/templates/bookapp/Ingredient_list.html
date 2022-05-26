@@ -6,6 +6,8 @@
 
 {% block content %}
 <h1>{{name}}</h1>
+Количество постов на странице: {{page_obj|length}}
+
 <ul>
     {% for item in Ingredient %}
     <li>
@@ -27,4 +29,32 @@
 
     <a href="{% url 'cookbook:ingredient_create' %}">Создать</a>
 </ul>
+
+<!-- Pager -->
+
+        <div class="clearfix">
+            <div class="pagination">
+
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+{#               <a href="?page={{ page_obj.next_page_number }}">next</a> #}
+
+
+                    <a class="btn btn-primary float-right"
+                       href="?page={{ page_obj.next_page_number }}">Older Posts &rarr;</a>
+
+                {% endif %}
+
+
+            </span>
+            </div>
+        </div>
 {% endblock %}

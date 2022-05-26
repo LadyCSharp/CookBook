@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from .models import Ingredient
-from .models import Recipes, Category, Ingredients_group
+from .models import Recipes, Category, Ingredients_group, Ingredient_Recipe
 from .forms import ContactForm, PostForm
 from django.core.mail import send_mail
 from django.views.generic.base import ContextMixin
@@ -9,6 +9,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django import forms
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 # Create your views here.
 # def main_view(request):
 #     posts = Recipes.objects.all()
@@ -74,6 +75,7 @@ class NameContextMixin(ContextMixin):
 class IngredientListView(ListView, NameContextMixin):
     model = Ingredient
     template_name = 'bookapp/ingredient_list.html'
+    paginate_by = 5 #20
     context_object_name = 'Ingredient'
 
 
@@ -172,6 +174,7 @@ class GroupListView(ListView, NameContextMixin):
 class MainView(ListView):
     model = Recipes
     template_name = 'bookapp/main.html'
+    paginate_by = 3
     context_object_name = 'Recipes'
 
 
@@ -195,9 +198,16 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
 class RecipeDetailView(DetailView):
     fields = '__all__'
     model = Recipes
-    tags = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
-                                          widget=forms.CheckboxSelectMultiple())
+    # ingredient = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
+    #                                       widget=forms.CheckboxSelectMultiple())
     template_name = 'bookapp/recipe_detail.html'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(RecipeDetailView, self).get_context_data(**kwargs)
+    #     context['sostav'] = Ingredient_Recipe.objects.filter(
+    #         recipe=self.object)
+    #     print(context)
+    #     return context
 
     def get(self, request, *args, **kwargs):
         """
