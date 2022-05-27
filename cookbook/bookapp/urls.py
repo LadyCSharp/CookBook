@@ -15,9 +15,13 @@ urlpatterns = [
     path('ingredient-create/', views.IngredientCreateView.as_view(), name='ingredient_create'),
     path('ingredient-update/<int:pk>/', views.IngredientUpdateView.as_view(), name='ingredient_update'),
     path('ingredient-delete/<int:pk>/', views.IngredientDeleteView.as_view(), name='ingredient_delete'),
-    path('ingredient-group', views.GroupListView.as_view(), name='ingredient_group'),
     path('ingredient-list/<int:pk>/', views.IngredientFilterListView.as_view(), name='ingredient_list'),
+    path('ingredient-group', views.GroupListView.as_view(), name='ingredient_group'),
     path('recipe-update/<int:pk>/', views.RecipeUpdateView.as_view(), name='recipe_update'),
     path('recipe-delete/<int:pk>/', views.RecipeDeleteView.as_view(), name='recipe_delete'),
+    path('category-detail/<int:pk>/', views.CategoryDetailView.as_view(), name='category_detail'),
+    path('category-list', views.CategoryListView.as_view(), name='category_list'),
+    path('category-create/<int:pk>/', views.RecipeCategoryCreateView.as_view(), name='recipe_category_create'),
+    path('category-update/<int:pk>/', views.RecipeCategoryCreateView.as_view(), name='category_update'),
 ]
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from .models import Ingredient
 from .models import Recipes, Category, Ingredients_group, Ingredient_Recipe
-from .forms import ContactForm, PostForm
+from .forms import ContactForm, PostForm, RecipeCategoryForm
 from django.core.mail import send_mail
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -173,9 +173,14 @@ class GroupListView(ListView, NameContextMixin):
 
 class MainView(ListView):
     model = Recipes
+    title = 'вкуСняшки от машки'
     template_name = 'bookapp/main.html'
     paginate_by = 3
     context_object_name = 'Recipes'
+
+    def get_queryset(self):
+        return Recipes.active_objects.all()
+
 
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
@@ -250,3 +255,42 @@ class RecipeDeleteView(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+class CategoryDetailView(DetailView):
+    template_name = 'bookapp/category_detail.html'
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = RecipeCategoryForm()
+        return context
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'bookapp/category_list.html'
+    paginate_by = 5 #20
+
+
+class RecipeCategoryCreateView(CreateView):
+    model = Recipes
+    template_name = 'bookapp/category_detail.html'
+    success_url = reverse_lazy('')
+    form_class = RecipeCategoryForm
+
+    def post(self, request, *args, **kwargs):
+        self.category_pk = kwargs['pk']
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        user = self.request.user
+        form.instance.author = user
+        category = get_object_or_404(Category, pk=self.category_pk)
+        form.instance.category = category
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('bookapp:category_detail', kwargs={'pk': self.category_pk})
+
+
+

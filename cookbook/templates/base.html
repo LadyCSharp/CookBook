@@ -1,4 +1,5 @@
 {% load static %}
+{% load str_extensions %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -31,15 +32,19 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:index' %}">Главная</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:create' %}">Создать</a></li>
 
-
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:category_list' %}">Категории блюд</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:ingredient_list' %}">Список продуктов</a></li>
-                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:ingredient_group' %}">Продукты по группам</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:ingredient_group' %}">Продукты по группам</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:contact' %}">Контакты</a></li>
 
                          {% if user.is_authenticated %}
                  <li class="nav-item">
-                    Привет, {{user.username}}
+                    Привет, {{user.username}} id={{profile_id}}
                     <a class="nav-link" href="{% url 'users:logout' %}">Выход</a>
+                    <a class="nav-link" href="{% url 'users:profile_detail' pk=profile_id %}">Профиль</a>
+
+                     {# <a class="nav-link" href="{% url 'users:profile_detail' id=Profile.objects.get(user==user).id) %}">Профиль</a> #}
+
                 </li>
                 {% else %}
                 <li class="nav-item">
@@ -54,6 +59,9 @@
                         <li class="nav-item">
                     <a class="nav-link" href="{% url 'admin:index' %}">Админка</a>
                 </li>
+                        <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:profile_list' %}">Пользователи</a>
+                </li>
                         {% endif %}
 
                     </ul>
@@ -67,8 +75,8 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="site-heading">
-                            <h1>Вкусняшки от Машки</h1>
-                            <span class="subheading">Блог про пожрать</span>
+                            <h1>{{'вкуСНЯшки от Машки'|capitalize}}</h1>
+                            <span class="subheading">{{'Блог про пожрать'|sup}}</span>
                         </div>
                     </div>
                 </div>
@@ -82,33 +90,9 @@
         <footer class="border-top">
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
+                     {{joke}}
                     <div class="col-md-10 col-lg-8 col-xl-7">
-                        <ul class="list-inline text-center">
-                            <li class="list-inline-item">
-                                <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
+
                         <div class="small text-center text-muted fst-italic">Copyright &copy; Mary True 2022</div>
                     </div>
                 </div>

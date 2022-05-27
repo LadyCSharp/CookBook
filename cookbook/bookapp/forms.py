@@ -28,3 +28,18 @@ class PostForm(forms.ModelForm):
         exclude = ('ingredients', 'author')
 
 
+class RecipeCategoryForm(forms.ModelForm):
+    name = forms.CharField(label='Название',
+                           widget=forms.TextInput(attrs={'placeholder': 'Name', 'class': 'form-control'}))
+
+    # Чекбоксы
+    ingredients = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
+                                          widget=forms.CheckboxSelectMultiple())
+
+    class Meta:
+        model = Recipes
+        # fields = '__all__'
+        # fields = ('name', 'category')
+        exclude = ('category', 'ingredients', 'author')
+
+

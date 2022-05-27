@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookapp',
     'userapp',
+    'utilapp',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +65,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'bookapp.context_processors.get_joke',
+                'bookapp.context_processors.get_profile',
+
             ],
         },
     },

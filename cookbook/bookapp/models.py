@@ -11,6 +11,20 @@ class TimeStamp(models.Model):
 
     class Meta:
         abstract = True
+class ActiveManager(models.Manager):
+
+    def get_queryset(self):
+        all_objects = super().get_queryset()
+        return all_objects.filter(is_active=True)
+
+
+class IsActiveMixin(models.Model):
+    objects = models.Manager()
+    active_objects = ActiveManager()
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
 
 class Mother(models.Model):
     """
@@ -52,16 +66,17 @@ class Ingredient(Mother):
     def __str__(self):
         return self.name
 
-class Recipes(TimeStamp, Mother):
+class Recipes(TimeStamp, Mother, IsActiveMixin):
 
     picture = models.ImageField(upload_to='posts', null=True, blank=True)
     ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe')
     difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)
     duration = models.TimeField()
     portions = models.PositiveSmallIntegerField()
     text = models.TextField()
     author = models.ForeignKey(BookUser, on_delete=models.CASCADE)
+
 
     def __str__(self):
         return f'{self.name}, category: {self.category.name}'
@@ -71,6 +86,10 @@ class Recipes(TimeStamp, Mother):
         # print('type', type(self.image))
         return bool(self.picture)
 
+    def display_sostav(self):
+        ingredients = self.ingredients.all()
+        result = ';'.join([item.name for item in ingredients])
+        return result
 
 class MeasureUnit(Mother):
     def __str__(self):
@@ -88,3 +107,14 @@ class Ingredient_Recipe(models.Model):
             'recipe',
             'ingredient',
         )
+
+
+# models.CASCADE: автоматически удаляет строку из зависимой таблицы, если удаляется связанная строка из главной таблицы
+#
+# models.PROTECT: блокирует удаление строки из главной таблицы, если с ней связаны какие-либо строки из зависимой таблицы
+#
+# models.SET_NULL: устанавливает NULL при удалении связанной строка из главной таблицы
+#
+# models.SET_DEFAULT: устанавливает значение по умолчанию для внешнео ключа в зависимой таблице. В этом случае для этого столбца должно быть задано значение по умолчанию
+#
+# models.DO_NOTHING: при удалении связанной строки из главной таблицы не производится никаких действий в зависимой таблице
