@@ -69,7 +69,7 @@ class Ingredient(Mother):
 class Recipes(TimeStamp, Mother, IsActiveMixin):
 
     picture = models.ImageField(upload_to='posts', null=True, blank=True)
-    ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe')
+    ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe', blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe')
     difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)
     duration = models.TimeField()
@@ -87,8 +87,12 @@ class Recipes(TimeStamp, Mother, IsActiveMixin):
         return bool(self.picture)
 
     def display_sostav(self):
+        result = list()
         ingredients = self.ingredients.all()
-        result = ';'.join([item.name for item in ingredients])
+        for item in ingredients:
+            r = str(Ingredient_Recipe.objects.get(recipe=self, ingredient=item))
+            #result += item.name + ' ' +r +'<br>'
+            result.append(item.name + ' ' +r)
         return result
 
 class MeasureUnit(Mother):
@@ -98,8 +102,8 @@ class MeasureUnit(Mother):
 
 class Ingredient_Recipe(models.Model):
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, db_index=False)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, db_index=False)
-    count = models.PositiveSmallIntegerField()
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, db_index=False, related_name='sostav')
+    value = models.PositiveSmallIntegerField()
     measureunit = models.ForeignKey(MeasureUnit, on_delete=models.CASCADE)
 
     class Meta:
@@ -107,6 +111,9 @@ class Ingredient_Recipe(models.Model):
             'recipe',
             'ingredient',
         )
+
+    def __str__(self):
+        return f'{str(self.value)}  {self.measureunit.name}'
 
 
 # models.CASCADE: автоматически удаляет строку из зависимой таблицы, если удаляется связанная строка из главной таблицы

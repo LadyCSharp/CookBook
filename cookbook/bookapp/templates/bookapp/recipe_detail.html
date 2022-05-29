@@ -16,11 +16,9 @@
         <p> {{object.description}} </p>
         <p>{{object.difficulty}} </p>
        <p> {{object.duration}} </p>
-        {% for i in object.ingredients.all %}
-            <li  >
-                {{i.name}} --- {{i.group}}
+        {% for item in object.display_sostav%}
+        <li>{{item}}</li>
 
-            </li>
     {% endfor %}
 
 

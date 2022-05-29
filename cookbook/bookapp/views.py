@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from .models import Ingredient
 from .models import Recipes, Category, Ingredients_group, Ingredient_Recipe
-from .forms import ContactForm, PostForm, RecipeCategoryForm
+from .forms import ContactForm, PostForm, RecipeCategoryForm, SostavForm
 from django.core.mail import send_mail
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -75,7 +75,7 @@ class NameContextMixin(ContextMixin):
 class IngredientListView(ListView, NameContextMixin):
     model = Ingredient
     template_name = 'bookapp/ingredient_list.html'
-    paginate_by = 5 #20
+    paginate_by = 20
     context_object_name = 'Ingredient'
 
 
@@ -173,13 +173,17 @@ class GroupListView(ListView, NameContextMixin):
 
 class MainView(ListView):
     model = Recipes
-    title = 'вкуСняшки от машки'
+    title = 'вкуСняшки от Машки'
     template_name = 'bookapp/main.html'
-    paginate_by = 3
+    paginate_by = 10
     context_object_name = 'Recipes'
 
+    # class Meta:
+    #     ordering = ['-id']
+
+
     def get_queryset(self):
-        return Recipes.active_objects.all()
+        return Recipes.active_objects.order_by('name').all()
 
 
 
@@ -189,7 +193,7 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
     # fields = '__all__'
     # exclude = ('author')
     form_class = PostForm
-    success_url = reverse_lazy('cookbook:index')
+
     template_name = 'bookapp/recipe_create.html'
     def form_valid(self, form):
         """
@@ -200,8 +204,12 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse('bookapp:sostav_create')
+
 class RecipeDetailView(DetailView):
     fields = '__all__'
+
     model = Recipes
     # ingredient = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
     #                                       widget=forms.CheckboxSelectMultiple())
@@ -235,8 +243,9 @@ class RecipeDetailView(DetailView):
 
 class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     fields = '__all__'
+    exclude = ('ingredient')
     model = Recipes
-    success_url = reverse_lazy('cookbook:index')
+
     template_name = 'bookapp/recipe_create.html'
     def form_valid(self, form):
         """
@@ -246,7 +255,28 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         """
         form.instance.author = self.request.user
         return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        """
+        Метод обработки get запроса
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.id = kwargs['pk']
+        return super().get(request, *args, **kwargs)
 
+    def get_object(self, queryset=None):
+        """
+        Получение этого объекта
+        :param queryset:
+        :return:
+        """
+
+        return get_object_or_404(Recipes, pk=self.id)
+
+    def get_success_url(self):
+        return reverse('bookapp:sostav_update', kwargs={'pk': self.id})
 
 class RecipeDeleteView(UserPassesTestMixin, DeleteView):
     template_name = 'bookapp/ingredient_delete.html'
@@ -269,7 +299,7 @@ class CategoryDetailView(DetailView):
 class CategoryListView(ListView):
     model = Category
     template_name = 'bookapp/category_list.html'
-    paginate_by = 5 #20
+    paginate_by = 10 #20
 
 
 class RecipeCategoryCreateView(CreateView):
@@ -292,5 +322,44 @@ class RecipeCategoryCreateView(CreateView):
     def get_success_url(self):
         return reverse('bookapp:category_detail', kwargs={'pk': self.category_pk})
 
+
+class SostavCreateView(CreateView):
+    model = Ingredient_Recipe
+    template_name = 'bookapp/sostav_create.html'
+    success_url = reverse_lazy('')
+    form_class = SostavForm
+
+    def post(self, request, *args, **kwargs):
+        self.recipe_pk = kwargs['pk']
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        recipe = get_object_or_404(Recipes, pk=self.pk)
+        form.instance.recipe = recipe
+        return super().form_valid(form)
+
+    def get_success_url(self):
+
+        return reverse('bookapp:recipe_detail', kwargs={'pk': self.recipe.pk})
+
+
+class SostavUpdateView(UpdateView):
+    model = Ingredient_Recipe
+    template_name = 'bookapp/sostav_create.html'
+    success_url = reverse_lazy('')
+    form_class = SostavForm
+
+    def post(self, request, *args, **kwargs):
+        self.recipe_pk = kwargs['pk']
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        recipe = get_object_or_404(Recipes, pk=self.pk)
+        form.instance.recipe = recipe
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('bookapp:recipe_detail', kwargs={'pk': self.recipe.pk})
 
 
