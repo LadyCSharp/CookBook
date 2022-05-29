@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'bookapp',
     'userapp',
     'utilapp',
+
+
 ]
 
 MIDDLEWARE = [

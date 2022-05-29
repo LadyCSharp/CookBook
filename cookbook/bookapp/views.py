@@ -9,6 +9,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django import forms
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.forms import formset_factory, modelformset_factory
 
 # Create your views here.
 # def main_view(request):
@@ -205,7 +206,8 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('bookapp:sostav_create')
+        #return reverse('bookapp:sostav_update')
+        return reverse('bookapp:manage_sostav', kwargs={'id': self.pk})
 
 class RecipeDetailView(DetailView):
     fields = '__all__'
@@ -242,8 +244,13 @@ class RecipeDetailView(DetailView):
         return get_object_or_404(Recipes, pk=self.tag_id)
 
 class RecipeUpdateView(LoginRequiredMixin, UpdateView):
-    fields = '__all__'
-    exclude = ('ingredient')
+    fields = ('picture',
+    'category' ,
+    'difficulty',
+    'duration',
+    'portions',
+    'text')
+
     model = Recipes
 
     template_name = 'bookapp/recipe_create.html'
@@ -255,6 +262,11 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         """
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        self.pk = kwargs['pk']
+        return super().post(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         """
         Метод обработки get запроса
@@ -263,20 +275,14 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         :param kwargs:
         :return:
         """
-        self.id = kwargs['pk']
+        self.r_id = kwargs['pk']
         return super().get(request, *args, **kwargs)
 
-    def get_object(self, queryset=None):
-        """
-        Получение этого объекта
-        :param queryset:
-        :return:
-        """
 
-        return get_object_or_404(Recipes, pk=self.id)
 
     def get_success_url(self):
-        return reverse('bookapp:sostav_update', kwargs={'pk': self.id})
+        #return reverse('bookapp:sostav_update', kwargs={'pk': self.id})
+        return reverse('bookapp:manage_sostav', kwargs={'id': self.pk})
 
 class RecipeDeleteView(UserPassesTestMixin, DeleteView):
     template_name = 'bookapp/ingredient_delete.html'
@@ -323,36 +329,50 @@ class RecipeCategoryCreateView(CreateView):
         return reverse('bookapp:category_detail', kwargs={'pk': self.category_pk})
 
 
-class SostavCreateView(CreateView):
-    model = Ingredient_Recipe
-    template_name = 'bookapp/sostav_create.html'
-    success_url = reverse_lazy('')
-    form_class = SostavForm
-
-    def post(self, request, *args, **kwargs):
-        self.recipe_pk = kwargs['pk']
-        return super().post(request, *args, **kwargs)
-
-    def form_valid(self, form):
-
-        recipe = get_object_or_404(Recipes, pk=self.pk)
-        form.instance.recipe = recipe
-        return super().form_valid(form)
-
-    def get_success_url(self):
-
-        return reverse('bookapp:recipe_detail', kwargs={'pk': self.recipe.pk})
+# class SostavCreateView(CreateView):
+#     model = Ingredient_Recipe
+#     template_name = 'bookapp/sostav_create.html'
+#     success_url = reverse_lazy('')
+#     #form_class = SostavForm
+#     SostavFormSet = formset_factory(SostavForm, extra=1)
+#
+#     def post(self, request, *args, **kwargs):
+#         self.recipe_pk = kwargs['pk']
+#         return super().post(request, *args, **kwargs)
+#
+#     def form_valid(self, form):
+#
+#         recipe = get_object_or_404(Recipes, pk=self.pk)
+#         form.instance.recipe = recipe
+#         return super().form_valid(form)
+#
+#     def get_success_url(self):
+#
+#         return reverse('bookapp:recipe_detail', kwargs={'pk': self.recipe.pk})
 
 
 class SostavUpdateView(UpdateView):
     model = Ingredient_Recipe
+    fields = '__all__'
     template_name = 'bookapp/sostav_create.html'
     success_url = reverse_lazy('')
-    form_class = SostavForm
+    SostavFormSet = formset_factory(SostavForm, extra=1)
 
-    def post(self, request, *args, **kwargs):
-        self.recipe_pk = kwargs['pk']
-        return super().post(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        """
+        Метод обработки get запроса
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.id = kwargs['pk']
+        return super().get(request, *args, **kwargs)
+
+        def get_queryset(self):
+            self.recipe = get_object_or_404(Recipes, id=self.kwargs['pk'])
+            return Ingredient_Recipe.objects.filter(recipe=self.recipe)
+
 
     def form_valid(self, form):
         recipe = get_object_or_404(Recipes, pk=self.pk)
@@ -361,5 +381,20 @@ class SostavUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('bookapp:recipe_detail', kwargs={'pk': self.recipe.pk})
+
+
+
+def managesostav(request, id):
+    recipe = get_object_or_404(Recipes, id=id)
+    SostavFormSet = modelformset_factory(Ingredient_Recipe, exclude=('recipe',))
+    if request.method == 'POST':
+        formset = SostavFormSet(request.POST, request.FILES, queryset=Ingredient_Recipe.objects.filter(recipe=recipe))
+        if formset.is_valid():
+            formset.save()
+            # do something.
+            return HttpResponseRedirect(reverse('bookapp:recipe_detail', kwargs={'pk': id}))
+    else:
+        formset = SostavFormSet(queryset=Ingredient_Recipe.objects.filter(recipe=recipe))
+    return render(request, 'bookapp/sostav_create.html', {'formset': formset})
 
 

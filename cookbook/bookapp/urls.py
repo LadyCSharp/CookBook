@@ -23,7 +23,7 @@ urlpatterns = [
     path('category-list', views.CategoryListView.as_view(), name='category_list'),
     path('category-create/<int:pk>/', views.RecipeCategoryCreateView.as_view(), name='recipe_category_create'),
     path('category-update/<int:pk>/', views.RecipeCategoryCreateView.as_view(), name='category_update'),
-    path('sostav-create', views.SostavCreateView.as_view(), name='sostav_create'),
     path('sostav-update/<int:pk>/', views.SostavUpdateView.as_view(), name='sostav_update'),
+    path('manage-sostav/<int:id>/', views.managesostav, name='manage_sostav'),
 ]
 

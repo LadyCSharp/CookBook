@@ -90,7 +90,7 @@ class Recipes(TimeStamp, Mother, IsActiveMixin):
         result = list()
         ingredients = self.ingredients.all()
         for item in ingredients:
-            r = str(Ingredient_Recipe.objects.get(recipe=self, ingredient=item))
+            r = Ingredient_Recipe.objects.get(recipe=self, ingredient=item).str1()
             #result += item.name + ' ' +r +'<br>'
             result.append(item.name + ' ' +r)
         return result
@@ -113,9 +113,10 @@ class Ingredient_Recipe(models.Model):
         )
 
     def __str__(self):
+        return f'{self.recipe} {self.ingredient} {str(self.value)}  {self.measureunit.name}'
+
+    def str1(self):
         return f'{str(self.value)}  {self.measureunit.name}'
-
-
 # models.CASCADE: автоматически удаляет строку из зависимой таблицы, если удаляется связанная строка из главной таблицы
 #
 # models.PROTECT: блокирует удаление строки из главной таблицы, если с ней связаны какие-либо строки из зависимой таблицы

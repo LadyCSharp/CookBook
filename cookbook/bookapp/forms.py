@@ -4,6 +4,7 @@ from .models import Ingredient, Ingredient_Recipe
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
+
 class ContactForm(forms.Form):
     name = forms.CharField(label='Название')
     email = forms.EmailField(label='email')

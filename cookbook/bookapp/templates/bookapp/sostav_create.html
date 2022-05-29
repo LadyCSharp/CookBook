@@ -9,11 +9,12 @@
     <h1>{{name}}</h1>
     <div class="col-lg-8 col-md-10 mx-auto">
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Сохранить</button>
-        </form>
+      <form method="post">
+    <table>
+        {{ formset }}
+    </table>
+</form>
+
 
     </div>
 </div>
