@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+{{post.name}}
+{% endblock %}
+{% block content%}
+
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <img src="{{post.picture.url}}", width="300">
+                        <p>
+                            
+                            {{post.text}}
+                        </p>
+                        <p>
+
+                            {{post.ingredients}}
+                        </p>
+                    </div>
+                </div>
+
+        <!-- Footer-->
+      {% endblock %}

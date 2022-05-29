@@ -1,47 +1,127 @@
 from django.db import models
-
+from userapp.models import BookUser
 # Create your models here.
+class TimeStamp(models.Model):
+    """
+    Abstract - для нее не создаются новые таблицы
+    данные хранятся в каждом наследнике
+    """
+    create = models.DateTimeField(auto_now_add=True)
+    update = models.DateTimeField(auto_now=True)
 
-class Category(models.Model):
-    # Id не надо, он уже сам появится
-    name = models.CharField(max_length=16, unique=True)
+    class Meta:
+        abstract = True
+class ActiveManager(models.Manager):
+
+    def get_queryset(self):
+        all_objects = super().get_queryset()
+        return all_objects.filter(is_active=True)
+
+
+class IsActiveMixin(models.Model):
+    objects = models.Manager()
+    active_objects = ActiveManager()
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+class Mother(models.Model):
+    """
+    Abstract - для нее не создаются новые таблицы
+    данные хранятся в каждом наследнике
+    """
+    name = models.CharField(max_length=32, unique=True)
     description = models.TextField(blank=True)
 
-    def __str__(self):
-        return self.name
-
-class Difficulty(models.Model):
-
-    name = models.CharField(max_length=16, unique=True)
+    class Meta:
+        abstract = True
+class Category(TimeStamp, Mother):
+    # Id не надо, он уже сам появится
 
 
     def __str__(self):
         return self.name
 
-class Ingredients_group(models.Model):
+class Difficulty(Mother):
 
-    name = models.CharField(max_length=16, unique=True)
+
 
 
     def __str__(self):
         return self.name
 
-class Ingredient(models.Model):
+class Ingredients_group(Mother):
 
-    name = models.CharField(max_length=16, unique=True)
+
+
+
+    def __str__(self):
+        return self.name
+
+class Ingredient(Mother):
+
     group = models.ForeignKey(Ingredients_group, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
-class Recipes(models.Model):
-    name = models.CharField(max_length=16, unique=True)
-    picture = models.ImageField()
-    ingredients = models.ManyToManyField(Ingredient)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+class Recipes(TimeStamp, Mother, IsActiveMixin):
+
+    picture = models.ImageField(upload_to='posts', null=True, blank=True)
+    ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe', blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe')
     difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)
     duration = models.TimeField()
     portions = models.PositiveSmallIntegerField()
     text = models.TextField()
+    author = models.ForeignKey(BookUser, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return f'{self.name}, category: {self.category.name}'
+
+    def has_image(self):
+        # print('my image:', self.image)
+        # print('type', type(self.image))
+        return bool(self.picture)
+
+    def display_sostav(self):
+        result = list()
+        ingredients = self.ingredients.all()
+        for item in ingredients:
+            r = str(Ingredient_Recipe.objects.get(recipe=self, ingredient=item))
+            #result += item.name + ' ' +r +'<br>'
+            result.append(item.name + ' ' +r)
+        return result
+
+class MeasureUnit(Mother):
     def __str__(self):
         return self.name
+
+
+class Ingredient_Recipe(models.Model):
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, db_index=False)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, db_index=False, related_name='sostav')
+    value = models.PositiveSmallIntegerField()
+    measureunit = models.ForeignKey(MeasureUnit, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (
+            'recipe',
+            'ingredient',
+        )
+
+    def __str__(self):
+        return f'{str(self.value)}  {self.measureunit.name}'
+
+
+# models.CASCADE: автоматически удаляет строку из зависимой таблицы, если удаляется связанная строка из главной таблицы
+#
+# models.PROTECT: блокирует удаление строки из главной таблицы, если с ней связаны какие-либо строки из зависимой таблицы
+#
+# models.SET_NULL: устанавливает NULL при удалении связанной строка из главной таблицы
+#
+# models.SET_DEFAULT: устанавливает значение по умолчанию для внешнео ключа в зависимой таблице. В этом случае для этого столбца должно быть задано значение по умолчанию
+#
+# models.DO_NOTHING: при удалении связанной строки из главной таблицы не производится никаких действий в зависимой таблице
