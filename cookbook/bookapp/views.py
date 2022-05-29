@@ -386,10 +386,11 @@ class SostavUpdateView(UpdateView):
 
 def managesostav(request, id):
     recipe = get_object_or_404(Recipes, id=id)
-    SostavFormSet = modelformset_factory(Ingredient_Recipe, exclude=('recipe',))
+    SostavFormSet = modelformset_factory(Ingredient_Recipe, fields = '__all__')
     if request.method == 'POST':
         formset = SostavFormSet(request.POST, request.FILES, queryset=Ingredient_Recipe.objects.filter(recipe=recipe))
         if formset.is_valid():
+
             formset.save()
             # do something.
             return HttpResponseRedirect(reverse('bookapp:recipe_detail', kwargs={'pk': id}))
