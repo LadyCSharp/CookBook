@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'bookapp',
     'userapp',
     'utilapp',
-
+    'django_extensions',
 
 ]
 
