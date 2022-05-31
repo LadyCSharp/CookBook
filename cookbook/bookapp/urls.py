@@ -25,5 +25,7 @@ urlpatterns = [
     path('category-update/<int:pk>/', views.RecipeCategoryCreateView.as_view(), name='category_update'),
     path('sostav-update/<int:pk>/', views.SostavUpdateView.as_view(), name='sostav_update'),
     path('manage-sostav/<int:id>/', views.managesostav, name='manage_sostav'),
+
+    path('sostav-recipe/<int:id>/', views.alsorecipe, name='sostav_recipe'),
 ]
 

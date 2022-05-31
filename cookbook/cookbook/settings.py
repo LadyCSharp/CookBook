@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'bookapp',
     'userapp',
     'utilapp',
-    'django_extensions',
+    'django_extensions',   #python manage.py graph_models bookapp -o myapp_models.png
 
 ]
 

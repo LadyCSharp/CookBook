@@ -23,7 +23,7 @@ class PostForm(forms.ModelForm):
         model = Recipes
         # fields = '__all__'
         # fields = ('name', 'category')
-        exclude = ('ingredients', 'author')
+        exclude = ('ingredients', 'author', 'is_active')
 
 
 class RecipeCategoryForm(forms.ModelForm):
@@ -38,7 +38,7 @@ class RecipeCategoryForm(forms.ModelForm):
         model = Recipes
         # fields = '__all__'
         # fields = ('name', 'category')
-        exclude = ('category', 'ingredients', 'author')
+        exclude = ('category', 'ingredients', 'author', 'is_active')
 
 
 class SostavForm(forms.ModelForm):
