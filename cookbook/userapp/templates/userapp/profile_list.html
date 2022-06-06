@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+Список пользователей
+{% endblock %}
+
+{% block content %}
+<h1>{{name}}</h1>
+
+
+<ul>
+    {% for item in object_list %}
+    <li>
+        <a href="{% url 'users:profile_detail' pk=item.pk %}">
+           {{item.user.username}} --- {{item.user.email}} --- {{item.info}}
+        </a>
+<br>
+        <a href="{% url 'users:profile_update' pk=item.pk %}">
+            Изменить
+        </a>
+        |
+
+        <a href="{% url 'users:profile_delete' pk=item.pk %}">
+            Удалить
+        </a>
+
+    </li>
+    {% endfor %}
+
+   {# <a href="{% url 'users:profile_create' %}">Создать</a> #}
+</ul>
+
+<!-- Pager -->
+
+        <div class="clearfix">
+            <div class="pagination">
+
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+{#               <a href="?page={{ page_obj.next_page_number }}">next</a> #}
+
+
+                    <a class="btn btn-primary float-right"
+                       href="?page={{ page_obj.next_page_number }}">Older Posts &rarr;</a>
+
+                {% endif %}
+
+
+            </span>
+            </div>
+        </div>
+{% endblock %}
