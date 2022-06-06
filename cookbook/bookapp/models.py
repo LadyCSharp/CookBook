@@ -1,5 +1,7 @@
 from django.db import models
 from userapp.models import BookUser
+from django.utils.functional import cached_property
+
 # Create your models here.
 class TimeStamp(models.Model):
     """
@@ -86,14 +88,35 @@ class Recipes(TimeStamp, Mother, IsActiveMixin):
         # print('type', type(self.image))
         return bool(self.picture)
 
+    # @cached_property
+    # def display_sostav(self):
+    #     result = list()
+    #     ingredients = self.ingredients.all()
+    #     for item in ingredients:
+    #         r = Ingredient_Recipe.objects.get(recipe=self, ingredient=item).str1
+    #         #result += item.name + ' ' +r +'<br>'
+    #         result.append(item.name + ' ' +r )
+    #     return result
+    # @cached_property
+    # def display_sostav(self):
+    #
+    #     items = Ingredient_Recipe.objects.filter(recipe=self).all()
+    #     result = ' '.join([item.str1() for item in items])
+    #     print(result)
+    #     return result
     def display_sostav(self):
         result = list()
         ingredients = self.ingredients.all()
         for item in ingredients:
             r = Ingredient_Recipe.objects.get(recipe=self, ingredient=item).str1()
-            #result += item.name + ' ' +r +'<br>'
-            result.append(item.name + ' ' +r)
+            # result += item.name + ' ' +r +'<br>'
+            result.append(item.name + ' ' + r)
         return result
+    @classmethod
+    def create(cls, name):
+        recipe = cls(name=name)
+        # do something with the book
+        return recipe
 
 class MeasureUnit(Mother):
     def __str__(self):
@@ -112,11 +135,23 @@ class Ingredient_Recipe(models.Model):
             'ingredient',
         )
 
-    def __str__(self):
-        return f'{self.recipe} {self.ingredient} {str(self.value)}  {self.measureunit.name}'
-
+    #S   @cached_property
     def str1(self):
-        return f'{str(self.value)}  {self.measureunit.name}'
+        return f'{self.ingredient} {str(self.value)}  {self.measureunit.name}'
+
+    # def __str__(self):
+    #     return f'{self.recipe} {self.ingredient} {str(self.value)}  {self.measureunit.name}'
+    #    @cached_property
+    def __str__(self):
+        return f'{self.ingredient} {str(self.value)} {self.measureunit.name}'
+
+
+
+# class RecipeManager(models.Manager):
+#     def create_recipe(self, name, text):
+#         recipe = self.create(nane=name, text=text)
+#         # do something
+#         return recipe
 # models.CASCADE: автоматически удаляет строку из зависимой таблицы, если удаляется связанная строка из главной таблицы
 #
 # models.PROTECT: блокирует удаление строки из главной таблицы, если с ней связаны какие-либо строки из зависимой таблицы
