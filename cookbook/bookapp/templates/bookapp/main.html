@@ -12,7 +12,7 @@
     {% for item in Recipes %}
     <li>
         <a href="{% url 'cookbook:recipe_detail' pk=item.pk %}">
-            {{item.name}}
+            {{item.name}} ({{item.category.name}})
             {% if item.has_image %}
              <img src="{{item.picture.url}}", width="60">
             {% endif %}

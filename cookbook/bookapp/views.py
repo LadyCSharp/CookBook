@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from .models import Ingredient
 from .models import Recipes, Category, Ingredients_group, Ingredient_Recipe
-from .forms import ContactForm, PostForm, RecipeCategoryForm, SostavForm
+from .forms import ContactForm, PostForm, RecipeCategoryForm, SostavUpdateForm, RecipeUpdateForm
 from django.core.mail import send_mail
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -78,7 +78,9 @@ class IngredientListView(ListView, NameContextMixin):
     template_name = 'bookapp/ingredient_list.html'
     paginate_by = 20
     context_object_name = 'Ingredient'
+    def get_queryset(self):
 
+        return Ingredient.objects.select_related('group')
 
 
 class IngredientFilterListView(ListView, NameContextMixin):
@@ -89,13 +91,14 @@ class IngredientFilterListView(ListView, NameContextMixin):
     def get_queryset(self):
 
         self.group = get_object_or_404(Ingredients_group, id=self.kwargs['pk'])
-        return Ingredient.objects.filter(group=self.group)
+        return Ingredient.objects.select_related('group').filter(group=self.group)
 
 
 
 
 # детальная информация
 class IngredientDetailView(DetailView, NameContextMixin):
+
     fields = '__all__'
     model = Ingredient
     template_name = 'bookapp/ingredient_detail.html'
@@ -184,7 +187,7 @@ class MainView(ListView):
 
 
     def get_queryset(self):
-        return Recipes.active_objects.order_by('name').all()
+        return Recipes.active_objects.select_related('category', 'author').order_by('name').all()
 
 
 
@@ -364,7 +367,7 @@ class SostavUpdateView(UpdateView):
     fields = '__all__'
     template_name = 'bookapp/sostav_create.html'
     success_url = reverse_lazy('')
-    SostavFormSet = formset_factory(SostavForm, extra=1)
+    SostavFormSet = formset_factory(SostavUpdateForm, extra=1)
 
     def get(self, request, *args, **kwargs):
         """
@@ -379,8 +382,8 @@ class SostavUpdateView(UpdateView):
 
         def get_queryset(self):
             self.recipe = get_object_or_404(Recipes, id=self.kwargs['pk'])
-            return Ingredient_Recipe.objects.filter(recipe=self.recipe)
-
+            #return Ingredient_Recipe.objects.prefetch_related('recipe', 'ingredient').filter(recipe=self.recipe)
+            return Ingredient_Recipe.objects.select_related('measureunit').filter(recipe=self.recipe)
 
     def form_valid(self, form):
         recipe = get_object_or_404(Recipes, pk=self.pk)
@@ -438,9 +441,9 @@ def SostavRecipe(request, id):
 
 def alsorecipe(request, id):
     recipe = get_object_or_404(Recipes, id=id)
-    SostavFormSet = inlineformset_factory(Recipes, Ingredient_Recipe, fields='__all__',extra=1)
+    SostavFormSet = inlineformset_factory(Recipes, Ingredient_Recipe, fields='__all__', extra=1)
     if request.method == "POST":
-        formset = SostavFormSet(request.POST, request.FILES,instance=recipe)
+        formset = SostavFormSet(request.POST, request.FILES, instance=recipe)
         if formset.is_valid():
             formset.save()
             # Do something. Should generally end with a redirect. For example:
@@ -490,3 +493,83 @@ class RecipeUpdatePlusView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         #return reverse('bookapp:sostav_update', kwargs={'pk': self.id})
         return reverse('bookapp:manage_sostav', kwargs={'id': self.pk})
+
+
+class RecipeUpdateViewPlus(LoginRequiredMixin, UpdateView):
+    model = Recipes
+    second_model = Ingredient_Recipe
+    form_class = RecipeUpdateForm
+    second_form_class = inlineformset_factory(Recipes, Ingredient_Recipe, fields='__all__', extra=1)
+    #pk = 'id'
+
+
+    def get_context_data(self, **kwargs):
+        context = super(RecipeUpdateViewPlus, self).get_context_data(**kwargs)
+        if self.request.method == 'POST':
+            details_formset = self.second_form_class(self.request.POST, prefix='details')
+        else:
+            details_object = self.second_model.objects.filter(recipe=self.rec_id)
+            details_formset = self.second_form_class(instance=details_object)
+            # details_form = self.second_form_class(instance=details_object, prefix='details')
+
+        context['details_form'] = details_formset
+        return context
+
+    def post(self, request, *args, **kwargs):
+        # get current task
+        obj = self.get_object()
+        # initiate the task form with this object as instance
+        form = self.form_class(request.POST, instance=obj)
+
+        # get realted details object or None.
+        # I can't check if this string works, but it should.
+        details_obj = getattr(object, 'taskdetails', None)
+
+        # initiate the details_form with this details_object as instance
+        details_form = self.second_form_class(request.POST, prefix='details',
+                                              instance=details_obj)
+
+        if form.is_valid() and details_form.is_valid():
+            return self.form_valid(form, details_form)
+        else:
+            return self.form_invalid(form, details_form)
+
+    def form_valid(self, form, details_form):
+
+        # save object
+        obj = form.save(commit=False)
+        obj.save()
+
+        # save details_object
+        details_obj = details_form.save(commit=False)
+        details_obj.recipe = obj
+        details_obj.save()
+
+        return HttpResponseRedirect(self.success_url)
+
+
+    def form_invalid(self, form, details_form):
+        return self.render_to_response(self.get_context_data(form=form, details_form=details_form))
+
+    def get_success_url(self):
+        #return reverse('bookapp:sostav_update')
+        return reverse('bookapp:recipe_detail', kwargs={'id': self.object.id})
+
+    def get(self, request, *args, **kwargs):
+        """
+        Метод обработки get запроса
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.rec_id = kwargs['pk']
+        return super().get(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        """
+        Получение этого объекта
+        :param queryset:
+        :return:
+        """
+        return get_object_or_404(Recipes, id=self.rec_id)

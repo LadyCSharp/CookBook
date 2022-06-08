@@ -41,7 +41,7 @@ class RecipeCategoryForm(forms.ModelForm):
         exclude = ('category', 'ingredients', 'author', 'is_active')
 
 
-class SostavForm(forms.ModelForm):
+class SostavUpdateForm(forms.ModelForm):
     name = forms.CharField(label='Название',
                            widget=forms.TextInput(attrs={'placeholder': 'Name', 'class': 'form-control'}))
 
@@ -53,4 +53,16 @@ class SostavForm(forms.ModelForm):
         # fields = ('name', 'category')
         exclude = ('recipe',)
 
+class RecipeUpdateForm(forms.ModelForm):
+    name = forms.CharField(label='Название',
+                           widget=forms.TextInput(attrs={'placeholder': 'Name', 'class': 'form-control'}))
 
+    # # Чекбоксы
+    # ingredients = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all(),
+    #                                       widget=forms.CheckboxSelectMultiple())
+
+    class Meta:
+        model = Recipes
+        # fields = '__all__'
+        # fields = ('name', 'category')
+        exclude = ('ingredients', 'author', 'is_active')

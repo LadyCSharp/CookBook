@@ -9,7 +9,7 @@ class TimeStamp(models.Model):
     данные хранятся в каждом наследнике
     """
     create = models.DateTimeField(auto_now_add=True)
-    update = models.DateTimeField(auto_now=True)
+    update = models.DateTimeField(auto_now=True, db_index=True)
 
     class Meta:
         abstract = True
@@ -72,7 +72,7 @@ class Recipes(TimeStamp, Mother, IsActiveMixin):
 
     picture = models.ImageField(upload_to='posts', null=True, blank=True)
     ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe', blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe', db_index=True)
     difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)
     duration = models.TimeField()
     portions = models.PositiveSmallIntegerField()
@@ -104,14 +104,21 @@ class Recipes(TimeStamp, Mother, IsActiveMixin):
     #     result = ' '.join([item.str1() for item in items])
     #     print(result)
     #     return result
+    # def display_sostav(self):
+    #     result = list()
+    #     ingredients = self.ingredients.all()
+    #     for item in ingredients:
+    #         r = Ingredient_Recipe.objects.get(recipe=self, ingredient=item).str1()
+    #         # result += item.name + ' ' +r +'<br>'
+    #         result.append(item.name + ' ' + r)
+    #     return result
+
     def display_sostav(self):
-        result = list()
-        ingredients = self.ingredients.all()
-        for item in ingredients:
-            r = Ingredient_Recipe.objects.get(recipe=self, ingredient=item).str1()
-            # result += item.name + ' ' +r +'<br>'
-            result.append(item.name + ' ' + r)
+        result = list(Ingredient_Recipe.objects.select_related('measureunit', 'ingredient').filter(recipe=self))
+
         return result
+
+
     @classmethod
     def create(cls, name):
         recipe = cls(name=name)
@@ -135,13 +142,14 @@ class Ingredient_Recipe(models.Model):
             'ingredient',
         )
 
-    #S   @cached_property
+    #@cached_property
     def str1(self):
-        return f'{self.ingredient} {str(self.value)}  {self.measureunit.name}'
+        #return f'{self.ingredient} {str(self.value)}  {self.measureunit.name}'
+        return f'{str(self.value)}  {self.measureunit.name}'
 
     # def __str__(self):
     #     return f'{self.recipe} {self.ingredient} {str(self.value)}  {self.measureunit.name}'
-    #    @cached_property
+    #@cached_property
     def __str__(self):
         return f'{self.ingredient} {str(self.value)} {self.measureunit.name}'
 

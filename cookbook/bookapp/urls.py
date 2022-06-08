@@ -18,6 +18,7 @@ urlpatterns = [
     path('ingredient-list/<int:pk>/', views.IngredientFilterListView.as_view(), name='ingredient_list'),
     path('ingredient-group', views.GroupListView.as_view(), name='ingredient_group'),
     path('recipe-update/<int:pk>/', views.RecipeUpdateView.as_view(), name='recipe_update'),
+    # path('recipe-update/<int:pk>/', views.RecipeUpdateViewPlus.as_view(), name='recipe_update'),
     path('recipe-delete/<int:pk>/', views.RecipeDeleteView.as_view(), name='recipe_delete'),
     path('category-detail/<int:pk>/', views.CategoryDetailView.as_view(), name='category_detail'),
     path('category-list', views.CategoryListView.as_view(), name='category_list'),
