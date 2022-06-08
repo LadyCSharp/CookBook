@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{object.name}}
+{% endblock%}
+
+{% block content %}
+
+    <h1>{{object.name}}</h1>
+
+    <div class="col-lg-8 col-md-10 mx-auto">
+         {% if object.has_image %}
+         <img src="{{object.picture.url}}", width="300">
+        {% endif %}
+       <p> {{object.category}} </p>
+        <p> {{object.description}} </p>
+        <p>{{object.difficulty}} </p>
+       <p> {{object.duration}} </p>
+
+          {% for item in   object.display_sostav %}
+        <li> {{item}} </li>
+        {% endfor %}
+
+
+
+
+
+                        <p>
+
+                            {{object.text}}
+                        </p>
+
+
+    </div>
+    <p> {{object.author}} </p>
+    <a href="{% url 'cookbook:recipe_update' pk=object.pk %}">
+            Изменить
+        </a>
+</div>
+{% endblock %}

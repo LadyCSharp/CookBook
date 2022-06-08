@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{post.name}}
+{% endblock%}
+
+{% block content %}
+<div class="row">
+
+    <div class="col-lg-8 col-md-10 mx-auto">
+        {{object.name}}
+    </div>
+
+ {% for recipe in object.category_recipe.all %}
+        {{ recipe.name }}
+        <p></p>
+        <hr>
+        {% endfor %}
+
+        <form method="post" action="{% url 'bookapp:recipe_category_create' pk=object.pk %}">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Сохранить</button>
+        </form>
+</div>
+{% endblock %}

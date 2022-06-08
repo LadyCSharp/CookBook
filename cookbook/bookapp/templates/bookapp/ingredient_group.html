@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+Список продуктов
+{% endblock %}
+
+{% block content %}
+<h1>{{name}}</h1>
+<ul>
+    {% for item in Group %}
+    <li>
+        <a href="{% url 'cookbook:ingredient_list' pk=item.pk %}">
+            {{item.name}}
+        </a>
+
+
+    </li>
+    {% endfor %}
+
+</ul>
+{% endblock %}
