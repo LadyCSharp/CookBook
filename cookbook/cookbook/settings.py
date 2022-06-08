@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'userapp',
     'utilapp',
     'django_extensions',   #python manage.py graph_models bookapp -o myapp_models.png
-    'debug_toolbar'
+    'debug_toolbar',
+    'rest_framework',
+    'django_cleanup.apps.CleanupConfig',
 
 ]
 
@@ -156,3 +158,11 @@ INTERNAL_IPS = [
 if DEBUG:
     import mimetypes
     mimetypes.add_type("application/javascript", ".js", True)
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

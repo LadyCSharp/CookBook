@@ -18,11 +18,26 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from rest_framework import routers
+from bookapp.api_views import CategoryViewSet, RecipeViewSet, DifficultyViewSet, Ingredients_groupViewSet, \
+    IngredientViewSet, MeasureUnitViewSet, Ingredient_RecipeViewSet
+# Routers provide an easy way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'categories', CategoryViewSet)
+router.register(r'recipes', RecipeViewSet)
+router.register(r'difficulty', DifficultyViewSet)
+router.register(r'ingredients_group', Ingredients_groupViewSet)
+router.register(r'ingredient', IngredientViewSet)
+router.register(r'measureunit', MeasureUnitViewSet)
+router.register(r'ingredientrecipe', Ingredient_RecipeViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('bookapp.urls', namespace='cookbook')),
-    path('users/', include('userapp.urls', namespace='users'))
+    path('users/', include('userapp.urls', namespace='users')),
+    path('api-auth/', include('rest_framework.urls')),
+    # path('api/v0/categories/', include(router.urls)),
+    # path('api/v0/posts/', include(router_p.urls)),
+    path('api/v0/', include(router.urls)),
 ]
 
 
