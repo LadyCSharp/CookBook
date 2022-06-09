@@ -3,7 +3,7 @@ from telebot import apihelper
 import time
 import os
 import requests
-
+from cookbook.settings import INTERNAL_IPS
 TOKEN='5203104381:AAHmxnTLcCpMc9LlACMfwJW6CUEAheEssKs'
 bot = telebot.TeleBot(TOKEN)
 
@@ -41,9 +41,17 @@ def list(message):
     mess=""
     token = '99ab153ad4d73141ab117ba94b3bef8179a87d62'
     headers = {'Authorization': f'Token {token}'}
-    response = requests.get('http://127.0.0.1:8000/api/v0/categories/', headers=headers)
-    for item in response.json():
-        mess += item['name']+"\n"
+    #rooturl = 'http://127.0.0.1:8000'
+    rooturl = INTERNAL_IPS[0]
+    # url=os.path.join(rooturl,'/api/v0/categories/')
+    url ='http://' + rooturl+ ':8000/api/v0/categories/'
+    print(url)
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        for item in response.json():
+            mess += item['name']+"\n"
+    else:
+        mess='что-то пошло не так'
 
     bot.reply_to(message, mess)
 
