@@ -95,7 +95,7 @@
             <div class="container px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                      <p class="copyright text-muted">
-                    <button type="button" id="btn-joke" class="btn-info">
+                    <button type="button" id="btn-joke" class="btn-secondary">
                     {{joke}}
                 </button>
                 </p>
@@ -111,6 +111,9 @@
         <!-- Core theme JS-->
         <script src="{% static 'js/scripts.js' %}"></script>
     {% endwith %}
-     <script src="{% static 'js/my.js' %}"></script>
+    <!-- Bootstrap core JavaScript -->
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+
+<script src="{% static 'js/my.js' %}"></script>
     </body>
 </html>

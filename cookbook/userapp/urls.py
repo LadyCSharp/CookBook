@@ -13,5 +13,7 @@ urlpatterns = [
     path('profile-create/', views.ProfileCreateView.as_view(), name='profile_create'),
     path('profile-update/<int:pk>/', views.ProfileUpdateView.as_view(), name='profile_update'),
     path('profile-delete/<int:pk>/', views.ProfileDeleteView.as_view(), name='profile_delete'),
+    path('update-token/', views.update_token, name='update_token'),
+    path('update-token-ajax/', views.update_token_ajax),
 ]
 

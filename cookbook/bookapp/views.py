@@ -5,7 +5,7 @@ from .models import Recipes, Category, Ingredients_group, Ingredient_Recipe
 from .forms import ContactForm, PostForm, RecipeCategoryForm, SostavUpdateForm, RecipeUpdateForm
 from django.core.mail import send_mail
 from django.views.generic.base import ContextMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView,  TemplateView
 from django import forms
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -573,3 +573,7 @@ class RecipeUpdateViewPlus(LoginRequiredMixin, UpdateView):
         :return:
         """
         return get_object_or_404(Recipes, id=self.rec_id)
+
+
+class SimpleMainAjax(TemplateView):
+    template_name = 'bookapp/simple.html'

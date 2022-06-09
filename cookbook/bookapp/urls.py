@@ -28,5 +28,6 @@ urlpatterns = [
     path('manage-sostav/<int:id>/', views.managesostav, name='manage_sostav'),
 
     path('sostav-recipe/<int:id>/', views.alsorecipe, name='sostav_recipe'),
+    path('simple/', views.SimpleMainAjax.as_view(), name='simple_ajax'),
 ]
 

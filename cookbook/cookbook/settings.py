@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django_extensions',   #python manage.py graph_models bookapp -o myapp_models.png
     'debug_toolbar',
     'rest_framework',
+    'rest_framework.authtoken',
+    # Клинап обязан быть последним
     'django_cleanup.apps.CleanupConfig',
 
 ]
@@ -163,6 +165,10 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ]
 }

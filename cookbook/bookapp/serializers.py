@@ -10,6 +10,7 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RecipeSerializer(serializers.HyperlinkedModelSerializer):
+    ingredients = serializers.StringRelatedField(many=True)
     class Meta:
         model = Recipes
         exclude = ['author']
