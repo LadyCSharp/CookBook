@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 {% load static %}
 {% load str_extensions %}
 
-<!DOCTYPE html>
+
 <html lang="ru">
     <head>
         <meta charset="utf-8" />
@@ -39,7 +40,7 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:category_list' %}">Категории блюд</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:ingredient_list' %}">Список продуктов</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:ingredient_group' %}">Продукты по группам</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:contact' %}">Контакты</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'cookbook:contact' %}">Телеграмм-бот</a></li>
 
                          {% if u.is_authenticated %}
                  <li class="nav-item">
