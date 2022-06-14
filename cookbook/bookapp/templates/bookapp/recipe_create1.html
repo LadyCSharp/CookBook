@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Редактор рецепта
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h1>{{name}}</h1>
+
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+             {{ details_form.as_p }}
+            {{ form.as_p }}
+
+
+
+            <button type="submit" class="btn btn-primary">OK</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

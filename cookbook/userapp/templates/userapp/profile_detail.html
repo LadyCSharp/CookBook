@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{post.name}}
+{% endblock%}
+
+{% block content %}
+<div class="row">
+    <h1>{{name}}</h1>
+    <div class="col-lg-8 col-md-10 mx-auto">
+        {{object.user.username}} ---
+        {{object.info}}
+
+          Токен:
+<span id="token">{% if object.user.auth_token %} {{object.user.auth_token}} {% else %} не создан {% endif %}</span>
+
+<form action="{% url 'users:update_token' %}">
+        <button type="submit" class="btn btn-primary">Новый токен</button>
+
+    </form>
+        <button type="button" id="ajax-btn" class="btn btn-info">Refresh token ajax</button>
+
+
+        </div>
+    <a href="{% url 'users:profile_update' pk=object.pk %}">
+            Изменить
+        </a>
+</div>
+{% endblock %}
