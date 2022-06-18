@@ -12,15 +12,15 @@ class ContactForm(forms.Form):
 
 
 class PostForm(forms.ModelForm):
-    name = forms.CharField(label='Название',
-                           widget=forms.TextInput(attrs={'placeholder': 'Название', 'class': 'form-control'}))
-    description = forms.CharField(label='Описание',
-                                  widget=forms.Textarea(attrs={'placeholder': 'Описание', 'class': 'form-control'}))
-    duration = forms.DurationField(label='Время приготовления',widget=forms.TextInput(attrs={'placeholder': 'Название', 'class': 'form-control'}))
-    portions = forms.CharField(label="Количество порций", widget=forms.NumberInput())
-    text = forms.CharField(label='Технология приготовления',
-                                  widget=forms.Textarea(attrs={'placeholder': 'Технология приготовления', 'class': 'form-control'}))
-    # picture = models.ImageField(upload_to='posts', null=True, blank=True)
+    # name = forms.CharField(label='Название',
+    #                        widget=forms.TextInput(attrs={'placeholder': 'Название', 'class': 'form-control'}))
+    # description = forms.CharField(label='Описание',
+    #                               widget=forms.Textarea(attrs={'placeholder': 'Описание', 'class': 'form-control'}))
+    # duration = forms.DurationField(label='Время приготовления',widget=forms.TextInput(attrs={'placeholder': 'Название', 'class': 'form-control'}))
+    # portions = forms.CharField(label="Количество порций", widget=forms.NumberInput())
+    # text = forms.CharField(label='Технология приготовления',
+    #                               widget=forms.Textarea(attrs={'placeholder': 'Технология приготовления', 'class': 'form-control'}))
+    # # picture = models.ImageField(upload_to='posts', null=True, blank=True)
     # ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe', blank=True)
     # category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe', db_index=True)
     # difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)

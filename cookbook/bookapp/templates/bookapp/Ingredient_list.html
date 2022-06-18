@@ -11,10 +11,11 @@
 <ul>
     {% for item in Ingredient %}
     <li>
+          <h5>
         <a href="{% url 'cookbook:ingredient_detail' pk=item.pk %}">
             {{item.name}} --- {{item.group}}
         </a>
-|
+  </h5>
         <a href="{% url 'cookbook:ingredient_update' pk=item.pk %}">
             Изменить
         </a>
@@ -27,7 +28,7 @@
     </li>
     {% endfor %}
 
-    <a href="{% url 'cookbook:ingredient_create' %}">Создать</a>
+    <a href="{% url 'cookbook:ingredient_create' %}">Добавить новый ингредиент</a>
 </ul>
 
 <!-- Pager -->
@@ -37,7 +38,7 @@
 
             <span class="step-links">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
                 {% endif %}
 
                 <span class="current">
@@ -45,11 +46,10 @@
                 </span>
 
                 {% if page_obj.has_next %}
-{#               <a href="?page={{ page_obj.next_page_number }}">next</a> #}
+              <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
 
 
-                    <a class="btn btn-primary float-right"
-                       href="?page={{ page_obj.next_page_number }}">Older Posts &rarr;</a>
+
 
                 {% endif %}
 

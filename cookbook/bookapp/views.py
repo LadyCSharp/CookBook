@@ -447,7 +447,8 @@ def alsorecipe(request, id):
         if formset.is_valid():
             formset.save()
             # Do something. Should generally end with a redirect. For example:
-            return HttpResponseRedirect(reverse('bookapp:recipe_detail', kwargs={'pk': id}))
+            # return HttpResponseRedirect(reverse('bookapp:recipe_detail', kwargs={'pk': id}))
+            return HttpResponseRedirect(reverse('bookapp:sostav_recipe', kwargs={'id': recipe.id} ))
     else:
         formset = SostavFormSet(instance=recipe)
     return render(request, 'bookapp/sostav_create.html', {'formset': formset})
