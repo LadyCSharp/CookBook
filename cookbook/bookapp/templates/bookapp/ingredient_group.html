@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Список продуктов
+Группы продуктов
 {% endblock %}
 
 {% block content %}
@@ -9,10 +9,10 @@
 <ul>
     {% for item in Group %}
     <li>
-        <a href="{% url 'cookbook:ingredient_list' pk=item.pk %}">
+     <h5>   <a href="{% url 'cookbook:ingredient_list' pk=item.pk %}">
             {{item.name}}
         </a>
-
+</h5>
 
     </li>
     {% endfor %}

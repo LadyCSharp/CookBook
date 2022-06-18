@@ -1,6 +1,6 @@
 from .models import Category, Recipes, Difficulty, Ingredients_group, Ingredient, MeasureUnit, Ingredient_Recipe
 from .serializers import CategorySerializer, RecipeSerializer, DifficultySerializer, Ingredients_groupSerializer, \
-    IngredientSerializer, MeasureUnitSerializer, Ingredient_RecipeSerializer
+    IngredientSerializer, MeasureUnitSerializer, Ingredient_RecipeSerializer, Recipe1Serializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
@@ -36,3 +36,7 @@ class MeasureUnitViewSet(viewsets.ModelViewSet):
 class Ingredient_RecipeViewSet(viewsets.ModelViewSet):
     queryset = Ingredient_Recipe.objects.all()
     serializer_class = Ingredient_RecipeSerializer
+
+class Recipe1ViewSet(viewsets.ModelViewSet):
+    queryset = Recipes.objects.prefetch_related('ingredients')
+    serializer_class = Recipe1Serializer

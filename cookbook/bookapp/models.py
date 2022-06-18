@@ -23,7 +23,7 @@ class ActiveManager(models.Manager):
 class IsActiveMixin(models.Model):
     objects = models.Manager()
     active_objects = ActiveManager()
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
@@ -33,8 +33,8 @@ class Mother(models.Model):
     Abstract - для нее не создаются новые таблицы
     данные хранятся в каждом наследнике
     """
-    name = models.CharField(max_length=32, unique=True)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=32, unique=True,verbose_name='Название')
+    description = models.TextField(blank=True,verbose_name='Описание')
 
     class Meta:
         abstract = True
@@ -70,14 +70,14 @@ class Ingredient(Mother):
 
 class Recipes(TimeStamp, Mother, IsActiveMixin):
 
-    picture = models.ImageField(upload_to='posts', null=True, blank=True)
+    picture = models.ImageField(upload_to='posts', null=True, blank=True, verbose_name='Картинка')
     ingredients = models.ManyToManyField(Ingredient, through='Ingredient_Recipe', blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe', db_index=True)
-    difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE)
-    duration = models.TimeField()
-    portions = models.PositiveSmallIntegerField()
-    text = models.TextField()
-    author = models.ForeignKey(BookUser, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_recipe', db_index=True, verbose_name='Категория')
+    difficulty = models.ForeignKey(Difficulty, on_delete=models.CASCADE, verbose_name='Сложность')
+    duration = models.TimeField(verbose_name='Время приготовления')
+    portions = models.PositiveSmallIntegerField(verbose_name='Количество порций')
+    text = models.TextField(verbose_name='Технология приготовления')
+    author = models.ForeignKey(BookUser, on_delete=models.CASCADE, verbose_name='Автор рецепта')
 
 
     def __str__(self):

@@ -39,19 +39,18 @@
 
             <span class="step-links">
                 {% if posts.has_previous %}
-                    <a href="?page={{ posts.previous_page_number }}">previous</a>
+                    <a href="?page={{ posts.previous_page_number }}">Предыдущая</a>
                 {% endif %}
 
                 <span class="current">
-                    Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+                    Страница {{ posts.number }} из {{ posts.paginator.num_pages }}.
                 </span>
 
                 {% if posts.has_next %}
-{#               <a href="?page={{ posts.next_page_number }}">next</a> #}
+            <a href="?page={{ posts.next_page_number }}">Следующая</a>
 
 
-                    <a class="btn btn-primary float-right"
-                       href="?page={{ posts.next_page_number }}">Older Posts &rarr;</a>
+
 
                 {% endif %}
 

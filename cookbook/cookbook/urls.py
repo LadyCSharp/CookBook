@@ -20,11 +20,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 from bookapp.api_views import CategoryViewSet, RecipeViewSet, DifficultyViewSet, Ingredients_groupViewSet, \
-    IngredientViewSet, MeasureUnitViewSet, Ingredient_RecipeViewSet
+    IngredientViewSet, MeasureUnitViewSet, Ingredient_RecipeViewSet, Recipe1ViewSet
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'recipes', RecipeViewSet)
+router.register(r'recipe1', Recipe1ViewSet)
 router.register(r'difficulty', DifficultyViewSet)
 router.register(r'ingredients_group', Ingredients_groupViewSet)
 router.register(r'ingredient', IngredientViewSet)

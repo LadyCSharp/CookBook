@@ -15,6 +15,16 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
         model = Recipes
         exclude = ['author']
 
+class Recipe1Serializer(serializers.HyperlinkedModelSerializer):
+    # Singredients = Recipes.display_sostav(self=self)
+    sostav = serializers.StringRelatedField(source='display_sostav', read_only=True)
+    ingredients = serializers.StringRelatedField(many=True)
+    hi = serializers.BooleanField(source='has_image', read_only=True)
+    picture = serializers.ImageField()
+    class Meta:
+        model = Recipes
+        exclude = ['author']
+
 class DifficultySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Difficulty

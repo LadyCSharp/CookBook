@@ -80,14 +80,14 @@ class IngredientListView(ListView, NameContextMixin):
     context_object_name = 'Ingredient'
     def get_queryset(self):
 
-        return Ingredient.objects.select_related('group')
+        return Ingredient.objects.select_related('group').order_by('name')
 
 
 class IngredientFilterListView(ListView, NameContextMixin):
     model = Ingredient
     template_name = 'bookapp/ingredient_list.html'
     context_object_name = 'Ingredient'
-
+    paginate_by = 20
     def get_queryset(self):
 
         self.group = get_object_or_404(Ingredients_group, id=self.kwargs['pk'])
@@ -179,7 +179,7 @@ class MainView(ListView):
     model = Recipes
     title = 'вкуСняшки от Машки'
     template_name = 'bookapp/main.html'
-    paginate_by = 10
+    paginate_by = 20
     context_object_name = 'Recipes'
 
     # class Meta:
@@ -316,7 +316,7 @@ class CategoryDetailView(DetailView):
 class CategoryListView(ListView):
     model = Category
     template_name = 'bookapp/category_list.html'
-    paginate_by = 10 #20
+    paginate_by = 20
 
 
 class RecipeCategoryCreateView(CreateView):

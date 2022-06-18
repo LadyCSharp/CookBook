@@ -12,18 +12,23 @@
          {% if object.has_image %}
          <img src="{{object.picture.url}}", width="300">
         {% endif %}
-       <p> {{object.category}} </p>
-        <p> {{object.description}} </p>
-        <p>{{object.difficulty}} </p>
-       <p> {{object.duration}} </p>
+
+       <p class="text-right"><i>Категория</i> {{object.category}} <br>
+        <i>Описание </i>{{object.description}} <br>
+        <i>Сложность</i> {{object.difficulty}} <br>
+      <i>Время приготовления</i> {{object.duration}} </p>
+
+<h6>Состав на {{object.portions}} порций</h6>
 
           {% for item in   object.display_sostav %}
+
         <li> {{item}} </li>
+
         {% endfor %}
 
 
 
-
+<h6>Технология приготовления</h6>
 
                         <p>
 
@@ -32,9 +37,9 @@
 
 
     </div>
-    <p> {{object.author}} </p>
+    <p>Автор рецепта {{object.author}} </p>
     <a href="{% url 'cookbook:recipe_update' pk=object.pk %}">
-            Изменить
+            Редактировать рецепт
         </a>
 </div>
 {% endblock %}

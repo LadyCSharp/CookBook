@@ -44,8 +44,10 @@
 
                          {% if u.is_authenticated %}
                  <li class="nav-item">
-                    Привет, {{u.username}} id={{profile_id}}
+                    Привет, {{u.username}} {# id={{profile_id}} #}
                     <a class="nav-link" href="{% url 'users:logout' %}">Выход</a>
+                     </li>
+                         <li class="nav-item">
                     <a class="nav-link" href="{% url 'users:profile_detail' pk=profile_id %}">Профиль</a>
 
                      {# <a class="nav-link" href="{% url 'users:profile_detail' id=Profile.objects.get(user==u).id) %}">Профиль</a> #}
@@ -78,19 +80,21 @@
         <header class="masthead" style="background-image: url( {% static 'assets/img/home-bg.jpg' %} )">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
+                  {#  <div class="col-md-10 col-lg-8 col-xl-7"> #}
                         <div class="site-heading">
                             <h1>{{'вкуСНЯшки от Машки'|capitalize}}</h1>
                             <span class="subheading">{{'Блог про пожрать'|sup}}</span>
                         </div>
-                    </div>
+
+                  {#  </div> #}
                 </div>
-            </div>
+ </div>
         </header>
         <!-- Main Content-->
         <div class="container px-4 px-lg-5">
            {% block content %} {% endblock %}
         </div>
+
         <!-- Footer-->
         <footer class="border-top">
             <div class="container px-4 px-lg-5">
