@@ -24,8 +24,8 @@ from bookapp.api_views import CategoryViewSet, RecipeViewSet, DifficultyViewSet,
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'categories', CategoryViewSet)
-router.register(r'recipes', RecipeViewSet)
-router.register(r'recipe1', Recipe1ViewSet)
+router.register(r'recipebot', Recipe1ViewSet)
+router.register(r'recipe', RecipeViewSet)
 router.register(r'difficulty', DifficultyViewSet)
 router.register(r'ingredients_group', Ingredients_groupViewSet)
 router.register(r'ingredient', IngredientViewSet)

@@ -132,9 +132,9 @@ class MeasureUnit(Mother):
 
 class Ingredient_Recipe(models.Model):
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, db_index=False)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, db_index=False, related_name='sostav')
-    value = models.PositiveSmallIntegerField()
-    measureunit = models.ForeignKey(MeasureUnit, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, db_index=False, related_name='sostav',verbose_name='Ингредиент')
+    value = models.PositiveSmallIntegerField(verbose_name='Количество')
+    measureunit = models.ForeignKey(MeasureUnit, on_delete=models.CASCADE,verbose_name='Единица измерения')
 
     class Meta:
         unique_together = (

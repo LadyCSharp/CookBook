@@ -18,6 +18,7 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
 class Recipe1Serializer(serializers.HyperlinkedModelSerializer):
     # Singredients = Recipes.display_sostav(self=self)
     sostav = serializers.StringRelatedField(source='display_sostav', read_only=True)
+    # sostav = serializers.ManyRelatedField(source='display_sostav', read_only=True)
     ingredients = serializers.StringRelatedField(many=True)
     hi = serializers.BooleanField(source='has_image', read_only=True)
     picture = serializers.ImageField()

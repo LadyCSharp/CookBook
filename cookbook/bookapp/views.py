@@ -157,10 +157,13 @@ class IngredientUpdateView(LoginRequiredMixin,UpdateView):
     template_name = 'bookapp/ingredient_create.html'
 
 
-class IngredientDeleteView(LoginRequiredMixin,DeleteView):
+class IngredientDeleteView(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
     template_name = 'bookapp/ingredient_delete.html'
     model = Ingredient
     success_url = reverse_lazy('cookbook:ingredient_list')
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 class GroupListView(ListView, NameContextMixin):
     model = Ingredients_group

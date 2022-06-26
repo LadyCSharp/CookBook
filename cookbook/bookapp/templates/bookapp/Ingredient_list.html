@@ -7,7 +7,9 @@
 {% block content %}
 <h1>{{name}}</h1>
 Количество постов на странице: {{page_obj|length}}
-
+<br>
+<a class="btn btn-secondary"
+                      href="{% url 'cookbook:ingredient_create' %}">Добавить новый ингредиент</a>
 <ul>
     {% for item in Ingredient %}
     <li>
@@ -27,8 +29,8 @@
 
     </li>
     {% endfor %}
-
-    <a href="{% url 'cookbook:ingredient_create' %}">Добавить новый ингредиент</a>
+ <a class="btn btn-secondary"
+                      href="{% url 'cookbook:ingredient_create' %}">Добавить новый ингредиент</a>
 </ul>
 
 <!-- Pager -->

@@ -8,8 +8,9 @@
 <div class="row">
     <h1>{{name}}</h1>
     <div class="col-lg-8 col-md-10 mx-auto">
-        {{object.name}} ---
-        {{object.group}}
+      <h4>{{object.name}}</h4>   <br>
+         {{object.description}} <br>
+        Группа {{object.group}}
     </div>
 
     <a href="{% url 'cookbook:ingredient_update' pk=object.pk %}">

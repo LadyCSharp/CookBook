@@ -4,8 +4,9 @@ import time
 import os
 import requests
 import random
-from cookbook.settings import INTERNAL_IPS
-TOKEN='5203104381:AAHmxnTLcCpMc9LlACMfwJW6CUEAheEssKs'
+import urllib
+# TOKEN='5203104381:AAHmxnTLcCpMc9LlACMfwJW6CUEAheEssKs'
+TOKEN='5410019879:AAGjU-c-hHZo3ynf74ljEyVnFoY7OpZ3guk'
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
@@ -43,9 +44,9 @@ def category_list(message):
     token = '99ab153ad4d73141ab117ba94b3bef8179a87d62'
     headers = {'Authorization': f'Token {token}'}
     #rooturl = 'http://127.0.0.1:8000'
-    rooturl = INTERNAL_IPS[0]
+    rooturl = '194.87.92.56'
     # url=os.path.join(rooturl,'/api/v0/categories/')
-    url ='http://' + rooturl+ ':8000/api/v0/categories/'
+    url ='https://' + rooturl+ ':8080/api/v0/categories/'
     print(url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -63,15 +64,23 @@ def rnd(message):
     token = '99ab153ad4d73141ab117ba94b3bef8179a87d62'
     headers = {'Authorization': f'Token {token}'}
     #rooturl = 'http://127.0.0.1:8000'
-    rooturl = INTERNAL_IPS[0]
+    rooturl = '194.87.92.56'
     # url=os.path.join(rooturl,'/api/v0/categories/')
-    url ='http://' + rooturl + ':8000/api/v0/recipebot/'
+    url ='https://' + rooturl + ':8080/api/v0/recipe1/'
     print(url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         item = random.choice(response.json())
         if item['hi']:
-            bot.send_message(message.chat.id, item['picture'])
+            # bot.send_message(message.chat.id, item['picture'])
+            # photo = open(item['picture'], 'rb')
+            f = open('out.jpg', 'wb')
+            f.write(urllib.request.urlopen(item['picture']).read())
+            f.close()
+            img = open('out.jpg', 'rb')
+            bot.send_photo(message.chat.id, img)
+
+
         # print( type(item['sostav']))
         sos = item['sostav'].replace(',',"\n-").replace('Ingredient_Recipe:', "").replace('<',"").replace('>',"").replace('[',"-").replace(']',"")
 
